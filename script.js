@@ -34,19 +34,26 @@ const urlParams = new URLSearchParams(window.location.search);
 const cfgParam = urlParams.get('cfg');
 if (cfgParam) {
     try {
-        const decoded = JSON.parse(decodeURIComponent(escape(atob(cfgParam))));
+        // Robust Base64 decode for Unicode/UTF-8
+        const decodedJson = decodeURIComponent(atob(cfgParam).split('').map((c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const decoded = JSON.parse(decodedJson);
         config = { ...config, ...decoded };
+        console.log("Config loaded:", config);
 
         // Update DOM elements with new config
         const greetingEl = document.querySelector('.letter-content h1');
         const p1El = document.getElementById('letter-p1');
         const p2El = document.getElementById('letter-p2');
-        const audioSource = celebrationMusic.querySelector('source');
+        const audioSource = celebrationMusic ? celebrationMusic.querySelector('source') : null;
 
         if (greetingEl) greetingEl.textContent = config.greeting;
         if (p1El) p1El.setAttribute('data-text', config.p1);
         if (p2El) p2El.setAttribute('data-text', config.p2);
-        if (audioSource && config.audio) {
+
+        if (celebrationMusic && audioSource && config.audio) {
             audioSource.src = config.audio;
             celebrationMusic.load();
         }
