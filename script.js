@@ -45,15 +45,18 @@ if (cfgParam) {
         console.log("Config applied successfully:", config);
 
         // Update DOM elements with new config
-        const greetingEl = document.querySelector('.letter-content h1');
+        const greetingEl = document.getElementById('letter-greeting');
         const p1El = document.getElementById('letter-p1');
         const p2El = document.getElementById('letter-p2');
 
         if (greetingEl) {
-            console.log("Updating greeting to:", config.greeting);
+            console.log("Successfully found greeting element, updating to:", config.greeting);
             greetingEl.textContent = config.greeting;
         } else {
-            console.warn("Greeting element (.letter-content h1) not found!");
+            console.error("CRITICAL ERROR: Greeting element (#letter-greeting) not found!");
+            // Dynamic fallback
+            const fallback = document.querySelector('.letter-content h1');
+            if (fallback) fallback.textContent = config.greeting;
         }
 
         if (p1El) p1El.setAttribute('data-text', config.p1);
