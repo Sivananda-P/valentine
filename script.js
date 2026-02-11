@@ -20,12 +20,13 @@ const urlParams = new URLSearchParams(window.location.search);
 const cfgParam = urlParams.get('cfg');
 if (cfgParam) {
     try {
-        const decodedJson = decodeURIComponent(atob(cfgParam).split('').map((c) => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
+        console.log("Found cfgParam, decoding...");
+        // Universal UTF-8 Base64 decode
+        const decodedJson = decodeURIComponent(escape(atob(cfgParam)));
+
         const decoded = JSON.parse(decodedJson);
         config = { ...config, ...decoded };
-        console.log("Config loaded from URL:", config);
+        console.log("Config applied successfully:", config);
     } catch (e) {
         console.error('Failed to parse config:', e);
     }
