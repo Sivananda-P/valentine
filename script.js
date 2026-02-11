@@ -17,7 +17,7 @@ let config = {
     greeting: "Dear Love,",
     p1: "You make every day feel like Valentine's Day. Since the moment we met, my world has been brighter, warmer, and full of love.",
     p2: "I wanted to give you something as special as you are...",
-    audio: ".agent/WhatsApp Audio 2026-02-11 at 11.39.04 AM.mpeg",
+    audio: "assets/celebration.mp3",
     messages: [
         "I knew you couldn't say no! 😉",
         "Are you sure? Your smile is too precious to lose! ❤️",
@@ -53,8 +53,8 @@ if (cfgParam) {
         if (p1El) p1El.setAttribute('data-text', config.p1);
         if (p2El) p2El.setAttribute('data-text', config.p2);
 
-        if (celebrationMusic && audioSource && config.audio) {
-            audioSource.src = config.audio;
+        if (celebrationMusic && config.audio) {
+            celebrationMusic.src = config.audio;
             celebrationMusic.load();
         }
     } catch (e) {
