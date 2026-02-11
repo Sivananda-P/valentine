@@ -1,3 +1,11 @@
+const envelope = document.getElementById('envelope');
+const openBtn = document.getElementById('open-btn');
+const questionContainer = document.getElementById('question');
+const yesBtn = document.getElementById('yes-btn');
+const noBtn = document.getElementById('no-btn');
+const celebration = document.getElementById('celebration');
+const replayBtn = document.getElementById('replay-btn');
+const finalMessage = document.getElementById('final-message');
 const celebrationMusic = document.getElementById('celebration-music');
 const muteBtn = document.getElementById('mute-btn');
 
@@ -46,8 +54,6 @@ if (cfgParam) {
         console.error('Failed to parse config:', e);
     }
 }
-
-const persuasionMessages = config.messages;
 
 // Mute button toggle
 if (muteBtn) {
@@ -167,16 +173,6 @@ envelope.addEventListener('click', () => {
     }
 });
 
-const persuasionMessages = [
-    "I knew you couldn't say no! 😉",
-    "Are you sure? Your smile is too precious to lose! ❤️",
-    "A world with you is the only world I want to live in...",
-    "A soul as beautiful as yours deserves the purest love. Please say Yes? ✨",
-    "I'll make every day a celebration of YOU, I promise.",
-    "Look how good 'Yes' looks! Just one little click...",
-    "I promise to love you, cherish you, and hold you close forever. Please say Yes? 💍❤️"
-];
-
 noBtn.addEventListener('click', (e) => {
     e.preventDefault();
 
@@ -187,15 +183,15 @@ noBtn.addEventListener('click', (e) => {
         noBtn.style.animation = '';
     }, 500);
 
-    if (noClickCount < persuasionMessages.length) {
+    if (noClickCount < config.messages.length) {
         teaseText.style.opacity = '0';
         setTimeout(() => {
-            teaseText.innerText = persuasionMessages[noClickCount];
+            teaseText.innerText = config.messages[noClickCount];
             teaseText.classList.add('visible');
             teaseText.style.opacity = '1';
             noClickCount++;
 
-            if (noClickCount === persuasionMessages.length) {
+            if (noClickCount === config.messages.length) {
                 setTimeout(() => {
                     noBtn.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
                     noBtn.style.opacity = '0';

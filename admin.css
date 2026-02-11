@@ -7,10 +7,16 @@
 body {
     background: var(--admin-bg);
     min-height: 100vh;
+    height: auto;
+    /* Override fixed height from style.css */
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+    /* Ensure items start at top for scrolling */
     padding: 2rem 1rem;
     font-family: 'Outfit', sans-serif;
+    overflow-y: auto;
+    /* Ensure vertical scroll is allowed */
 }
 
 .admin-container {
