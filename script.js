@@ -34,6 +34,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const cfgParam = urlParams.get('cfg');
 if (cfgParam) {
     try {
+        console.log("Found cfgParam, decoding...");
         // Robust Base64 decode for Unicode/UTF-8
         const decodedJson = decodeURIComponent(atob(cfgParam).split('').map((c) => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -41,15 +42,20 @@ if (cfgParam) {
 
         const decoded = JSON.parse(decodedJson);
         config = { ...config, ...decoded };
-        console.log("Config loaded:", config);
+        console.log("Config applied successfully:", config);
 
         // Update DOM elements with new config
         const greetingEl = document.querySelector('.letter-content h1');
         const p1El = document.getElementById('letter-p1');
         const p2El = document.getElementById('letter-p2');
-        const audioSource = celebrationMusic ? celebrationMusic.querySelector('source') : null;
 
-        if (greetingEl) greetingEl.textContent = config.greeting;
+        if (greetingEl) {
+            console.log("Updating greeting to:", config.greeting);
+            greetingEl.textContent = config.greeting;
+        } else {
+            console.warn("Greeting element (.letter-content h1) not found!");
+        }
+
         if (p1El) p1El.setAttribute('data-text', config.p1);
         if (p2El) p2El.setAttribute('data-text', config.p2);
 
