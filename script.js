@@ -1,16 +1,53 @@
-const envelope = document.getElementById('envelope');
-const openBtn = document.getElementById('open-btn');
-const questionContainer = document.getElementById('question');
-const yesBtn = document.getElementById('yes-btn');
-const noBtn = document.getElementById('no-btn');
-const celebration = document.getElementById('celebration');
-const replayBtn = document.getElementById('replay-btn');
-const finalMessage = document.getElementById('final-message');
 const celebrationMusic = document.getElementById('celebration-music');
 const muteBtn = document.getElementById('mute-btn');
 
 let hasStarted = false;
 let noClickCount = 0;
+
+// Default configuration
+let config = {
+    greeting: "Dear Love,",
+    p1: "You make every day feel like Valentine's Day. Since the moment we met, my world has been brighter, warmer, and full of love.",
+    p2: "I wanted to give you something as special as you are...",
+    audio: ".agent/WhatsApp Audio 2026-02-11 at 11.39.04 AM.mpeg",
+    messages: [
+        "I knew you couldn't say no! 😉",
+        "Are you sure? Your smile is too precious to lose! ❤️",
+        "A world with you is the only world I want to live in...",
+        "A soul as beautiful as yours deserves the purest love. Please say Yes? ✨",
+        "I'll make every day a celebration of YOU, I promise.",
+        "Look how good 'Yes' looks! Just one little click...",
+        "I promise to love you, cherish you, and hold you close forever. Please say Yes? 💍❤️"
+    ]
+};
+
+// Load configuration from URL if present
+const urlParams = new URLSearchParams(window.location.search);
+const cfgParam = urlParams.get('cfg');
+if (cfgParam) {
+    try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(cfgParam))));
+        config = { ...config, ...decoded };
+
+        // Update DOM elements with new config
+        const greetingEl = document.querySelector('.letter-content h1');
+        const p1El = document.getElementById('letter-p1');
+        const p2El = document.getElementById('letter-p2');
+        const audioSource = celebrationMusic.querySelector('source');
+
+        if (greetingEl) greetingEl.textContent = config.greeting;
+        if (p1El) p1El.setAttribute('data-text', config.p1);
+        if (p2El) p2El.setAttribute('data-text', config.p2);
+        if (audioSource && config.audio) {
+            audioSource.src = config.audio;
+            celebrationMusic.load();
+        }
+    } catch (e) {
+        console.error('Failed to parse config:', e);
+    }
+}
+
+const persuasionMessages = config.messages;
 
 // Mute button toggle
 if (muteBtn) {

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Your Valentine Gift</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <header>
+            <h1>Customize Your Gift 💌</h1>
+            <p>Fill in the details below to create a personalized experience for your Valentine.</p>
+        </header>
+
+        <section class="config-section">
+            <div class="input-group">
+                <label for="greeting">Greeting (e.g., Dear Love)</label>
+                <input type="text" id="greeting" placeholder="Dear Love," value="Dear Love,">
+            </div>
+
+            <div class="input-group">
+                <label for="p1">Letter Paragraph 1</label>
+                <textarea id="p1"
+                    rows="3">You make every day feel like Valentine's Day. Since the moment we met, my world has been brighter, warmer, and full of love.</textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="p2">Letter Paragraph 2</label>
+                <textarea id="p2" rows="3">I wanted to give you something as special as you are...</textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="audio">Celebration Music URL (Optional)</label>
+                <input type="text" id="audio" placeholder="Link to MP3 file">
+                <small>Leave empty to use the default music.</small>
+            </div>
+
+            <div class="input-group">
+                <label>Persuasion Messages (One per line)</label>
+                <textarea id="messages" rows="5">I knew you couldn't say no! 😉
+Are you sure? Your smile is too precious to lose! ❤️
+A world with you is the only world I want to live in...
+A soul as beautiful as yours deserves the purest love. Please say Yes? ✨
+I'll make every day a celebration of YOU, I promise.
+Look how good 'Yes' looks! Just one little click...
+I promise to love you, cherish you, and hold you close forever. Please say Yes? 💍❤️</textarea>
+            </div>
+        </section>
+
+        <section class="share-section">
+            <h2>Your Shareable Link</h2>
+            <div class="link-box">
+                <input type="text" id="share-link" readonly>
+                <button id="copy-btn">Copy Link 📋</button>
+            </div>
+            <p class="share-info">Share this link with your special someone! 💖</p>
+            <div class="actions">
+                <a href="index.html" class="preview-btn" id="preview-btn">Preview Gift ✨</a>
+            </div>
+        </section>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>
