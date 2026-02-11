@@ -1,18 +1,4 @@
-const envelope = document.getElementById('envelope');
-const openBtn = document.getElementById('open-btn');
-const questionContainer = document.getElementById('question');
-const yesBtn = document.getElementById('yes-btn');
-const noBtn = document.getElementById('no-btn');
-const celebration = document.getElementById('celebration');
-const replayBtn = document.getElementById('replay-btn');
-const finalMessage = document.getElementById('final-message');
-const celebrationMusic = document.getElementById('celebration-music');
-const muteBtn = document.getElementById('mute-btn');
-
-let hasStarted = false;
-let noClickCount = 0;
-
-// Default configuration
+// 1. Initial Default Configuration
 let config = {
     greeting: "Dear Love,",
     p1: "You make every day feel like Valentine's Day. Since the moment we met, my world has been brighter, warmer, and full of love.",
@@ -29,47 +15,66 @@ let config = {
     ]
 };
 
-// Load configuration from URL if present
+// 2. Immediate Config Parsing (Before DOM)
 const urlParams = new URLSearchParams(window.location.search);
 const cfgParam = urlParams.get('cfg');
 if (cfgParam) {
     try {
-        console.log("Found cfgParam, decoding...");
-        // Robust Base64 decode for Unicode/UTF-8
         const decodedJson = decodeURIComponent(atob(cfgParam).split('').map((c) => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
-
         const decoded = JSON.parse(decodedJson);
         config = { ...config, ...decoded };
-        console.log("Config applied successfully:", config);
-
-        // Update DOM elements with new config
-        const greetingEl = document.getElementById('letter-greeting');
-        const p1El = document.getElementById('letter-p1');
-        const p2El = document.getElementById('letter-p2');
-
-        if (greetingEl) {
-            console.log("Successfully found greeting element, updating to:", config.greeting);
-            greetingEl.textContent = config.greeting;
-        } else {
-            console.error("CRITICAL ERROR: Greeting element (#letter-greeting) not found!");
-            // Dynamic fallback
-            const fallback = document.querySelector('.letter-content h1');
-            if (fallback) fallback.textContent = config.greeting;
-        }
-
-        if (p1El) p1El.setAttribute('data-text', config.p1);
-        if (p2El) p2El.setAttribute('data-text', config.p2);
-
-        if (celebrationMusic && config.audio) {
-            celebrationMusic.src = config.audio;
-            celebrationMusic.load();
-        }
+        console.log("Config loaded from URL:", config);
     } catch (e) {
         console.error('Failed to parse config:', e);
     }
 }
+
+// 3. DOM-Ready Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    applyConfigToDOM();
+});
+
+// Extra safety: Apply immediately if DOM is already loaded
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    applyConfigToDOM();
+}
+
+function applyConfigToDOM() {
+    const greetingEl = document.getElementById('letter-greeting');
+    const p1El = document.getElementById('letter-p1');
+    const p2El = document.getElementById('letter-p2');
+    const celebrationMusic = document.getElementById('celebration-music');
+
+    if (greetingEl) {
+        greetingEl.textContent = config.greeting;
+        console.log("Applied Greeting:", config.greeting);
+    }
+
+    if (p1El) p1El.setAttribute('data-text', config.p1);
+    if (p2El) p2El.setAttribute('data-text', config.p2);
+
+    if (celebrationMusic && config.audio) {
+        celebrationMusic.src = config.audio;
+        celebrationMusic.load();
+    }
+}
+
+// 4. Element Selectors
+const envelope = document.getElementById('envelope');
+const openBtn = document.getElementById('open-btn');
+const questionContainer = document.getElementById('question');
+const yesBtn = document.getElementById('yes-btn');
+const noBtn = document.getElementById('no-btn');
+const celebration = document.getElementById('celebration');
+const replayBtn = document.getElementById('replay-btn');
+const finalMessage = document.getElementById('final-message');
+const celebrationMusic = document.getElementById('celebration-music');
+const muteBtn = document.getElementById('mute-btn');
+
+let hasStarted = false;
+let noClickCount = 0;
 
 // Mute button toggle
 if (muteBtn) {
