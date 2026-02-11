@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Gift For You</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhancements.css">
+    <link rel="stylesheet" href="pen-styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="particles-js">
+        <div class="floating-heart" style="left: 15%; animation-delay: 0s;">❤️</div>
+        <div class="floating-heart" style="left: 35%; animation-delay: 3s;">💕</div>
+        <div class="floating-heart" style="left: 55%; animation-delay: 6s;">❤️</div>
+        <div class="floating-heart" style="left: 75%; animation-delay: 9s;">💕</div>
+        <div class="floating-heart" style="left: 85%; animation-delay: 12s;">❤️</div>
+    </div>
+
+    <!-- Mute Button -->
+    <button id="mute-btn" class="mute-btn" title="Toggle Sound"></button>
+
+    <!-- Countdown Overlay -->
+    <div id="countdown-overlay" class="countdown-overlay hidden">
+        <div class="countdown-number">3</div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="envelope-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVIGAAA="
+            type="audio/wav">
+    </audio>
+    <audio id="yes-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVIGAAA="
+            type="audio/wav">
+    </audio>
+
+    <div class="container">
+        <!-- The Envelope Wrapper -->
+        <div class="envelope-wrapper" id="envelope">
+            <div class="envelope">
+                <div class="front"></div>
+                <div class="top"></div>
+                <div class="letter">
+                    <div class="letter-content">
+                        <div class="letter-decoration top-right">🌸</div>
+                        <div class="letter-decoration bottom-left">🌸</div>
+                        <div class="pen-cursor">✒️</div>
+                        <h1>Dear Love,</h1>
+                        <p id="letter-p1"
+                            data-text="You make every day feel like Valentine's Day. Since the moment we met, my world has been brighter, warmer, and full of love.">
+                        </p>
+                        <p id="letter-p2" data-text="I wanted to give you something as special as you are..."></p>
+                        <div class="stamp-container">
+                            <div class="stamp">❤️</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="heart" id="open-btn"></div>
+        </div>
+
+        <!-- Celebration Music -->
+        <audio id="celebration-music" loop>
+            <source src=".agent/WhatsApp Audio 2026-02-11 at 11.39.04 AM.mpeg" type="audio/mpeg">
+        </audio>
+
+        <!-- The Final Question (Hidden initially) -->
+        <div class="question-container hidden" id="question">
+            <h1>Will you be my Valentine?</h1>
+            <div class="btn-group">
+                <button id="yes-btn" class="btn btn-yes">Yes!</button>
+                <button id="no-btn" class="btn btn-no">No</button>
+            </div>
+            <p id="tease-text" class="tease-text">I knew you couldn't say no! 😉</p>
+        </div>
+
+        <!-- Celebration Overlay -->
+        <div class="celebration-overlay hidden" id="celebration">
+            <div class="celebration-content">
+
+                <h1 class="glow-text">I Love You! ❤️</h1>
+                <p>You've made me the happiest person alive.</p>
+                <p class="final-message hidden" id="final-message">Together, we'll create a lifetime of beautiful
+                    memories. 💕</p>
+                <button id="replay-btn" class="replay-btn hidden">Experience Again ✨</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

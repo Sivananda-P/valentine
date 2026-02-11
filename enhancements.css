@@ -1,0 +1,194 @@
+/* Countdown Overlay */
+.countdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(194, 30, 86, 0.95), rgba(255, 200, 220, 0.95));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.5s ease;
+}
+
+.countdown-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 12rem;
+    color: white;
+    font-weight: 700;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: countdownPulse 1s ease-in-out;
+}
+
+.countdown-overlay::before {
+    content: '💝';
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    animation: heartBeat 1s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes countdownPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Mute Button */
+.mute-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(212, 142, 156, 0.4);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mute-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Replay Button */
+.replay-btn {
+    margin-top: 2rem;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #c21e56, #e2aab4);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(194, 30, 86, 0.3);
+    animation: fadeInUp 1s ease 6s forwards;
+    opacity: 0;
+}
+
+.replay-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(194, 30, 86, 0.4);
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Final Message */
+.final-message {
+    font-size: 1.3rem;
+    color: #3e2723;
+    margin-top: 2rem;
+    font-style: italic;
+    animation: fadeIn 1s ease 4s forwards;
+    opacity: 0;
+}
+
+/* Rose Petal */
+.rose-petal {
+    position: fixed;
+    font-size: 20px;
+    z-index: 999;
+    pointer-events: none;
+    animation: petalFall 5s linear forwards;
+}
+
+@keyframes petalFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(120vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Confetti */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    z-index: 999;
+    pointer-events: none;
+    animation: confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(120vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Mobile Enhancements */
+@media (max-width: 768px) {
+    .countdown-number {
+        font-size: 6rem;
+    }
+
+    .mute-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .countdown-number {
+        font-size: 4rem;
+    }
+}
