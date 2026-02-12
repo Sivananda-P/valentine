@@ -72,6 +72,14 @@ async function loadConfig() {
         } catch (e) { console.error('Failed to parse cfg:', e); }
     }
 
+    // 4. Hide "Create Your Own" link for recipients
+    const isShared = dbId || cfg || urlParams.get('g') || urlParams.get('p1');
+    if (isShared) {
+        const footerLink = document.querySelector('.footer-link');
+        if (footerLink) footerLink.style.display = 'none';
+        console.log("Recipient view detected: Hiding admin links.");
+    }
+
     applyConfigToDOM();
 }
 
