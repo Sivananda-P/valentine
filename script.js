@@ -23,23 +23,25 @@ const cfgParam = urlParams.get('cfg');
 if (cfgParam) {
     try {
         console.log("Found cfgParam, decoding...");
-        // Ensure standard Base64 by fixing any spaces back to '+'
         const pureB64 = cfgParam.replace(/ /g, '+');
-        // Universal UTF-8 Base64 decode
         const decodedJson = decodeURIComponent(escape(atob(pureB64)));
         const decoded = JSON.parse(decodedJson);
 
-        // Map short keys to full keys for compatibility
-        const mappedConfig = {};
-        if (decoded.g !== undefined) mappedConfig.greeting = decoded.g;
-        if (decoded.p1 !== undefined) mappedConfig.p1 = decoded.p1;
-        if (decoded.p2 !== undefined) mappedConfig.p2 = decoded.p2;
-        if (decoded.a !== undefined) mappedConfig.audio = decoded.a;
-        if (decoded.m !== undefined) mappedConfig.messages = decoded.m;
+        console.log("Decoded Config:", decoded);
 
-        // Spread the decoded values (handles both old full keys and new short keys)
-        config = { ...config, ...decoded, ...mappedConfig };
-        console.log("Config applied successfully:", config);
+        // Map short keys to full keys
+        if (decoded.g !== undefined) config.greeting = decoded.g;
+        if (decoded.p1 !== undefined) config.p1 = decoded.p1;
+        if (decoded.p2 !== undefined) config.p2 = decoded.p2;
+        if (decoded.a !== undefined) config.audio = decoded.a;
+        if (decoded.m !== undefined) config.messages = decoded.m;
+
+        // Also support old full keys if they exist
+        if (decoded.greeting !== undefined) config.greeting = decoded.greeting;
+        if (decoded.audio !== undefined) config.audio = decoded.audio;
+        if (decoded.messages !== undefined) config.messages = decoded.messages;
+
+        console.log("Final Merged Config:", config);
     } catch (e) {
         console.error('Failed to parse config:', e);
     }
