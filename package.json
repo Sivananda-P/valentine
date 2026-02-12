@@ -4,6 +4,9 @@
   "engines": {
     "node": "24.x"
   },
+  "scripts": {
+    "build": "echo 'Building...'"
+  },
   "dependencies": {
     "mongodb": "^6.3.0",
     "razorpay": "^2.9.2"
