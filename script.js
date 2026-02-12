@@ -171,13 +171,17 @@ function typeWriter(element, delay = 0, hidePenAfter = false) {
     });
 }
 
-// Open envelope with slow realistic typing
+// Open envelope with dynamic timing based on text length
 envelope.addEventListener('click', () => {
     if (!envelope.classList.contains('open') && !hasStarted) {
         hasStarted = true;
         envelope.classList.add('open');
 
-        setTimeout(async () => {
+        // Sequential execution: wait for typing to finish before hiding envelope
+        (async () => {
+            // Wait for envelope animation to finish opening
+            await new Promise(r => setTimeout(r, 800));
+
             const p1 = document.getElementById('letter-p1');
             const p2 = document.getElementById('letter-p2');
 
@@ -188,13 +192,15 @@ envelope.addEventListener('click', () => {
             if (p2) {
                 await typeWriter(p2, 500, true);
             }
-        }, 800);
 
-        // Extended to 25 seconds for slower, realistic typing
-        setTimeout(() => {
+            // Wait 2 seconds after typing ends so they can read the last line
+            await new Promise(r => setTimeout(r, 2000));
+
+            // Now safely transition away
             envelope.style.transition = 'opacity 1s ease, transform 1s ease';
             envelope.style.opacity = '0';
             envelope.style.transform = 'translateY(-50px) scale(0.8)';
+
             setTimeout(() => {
                 envelope.classList.add('hidden');
                 questionContainer.classList.remove('hidden');
@@ -202,7 +208,7 @@ envelope.addEventListener('click', () => {
                     questionContainer.classList.add('visible');
                 }, 100);
             }, 1000);
-        }, 25000);
+        })();
     }
 });
 
