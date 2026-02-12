@@ -17,45 +17,41 @@ const DEFAULTS = {
 
 let config = { ...DEFAULTS };
 
-// 2. Immediate Config Parsing (Before DOM)
-const urlParams = new URLSearchParams(window.location.search);
-const cfgParam = urlParams.get('cfg');
-if (cfgParam) {
+// 2. Immediate Config Parsing
+const urlParams = new URL(window.location.href).searchParams;
+
+// Support individual query params (Highest priority)
+if (urlParams.get('g')) config.greeting = urlParams.get('g');
+if (urlParams.get('p1')) config.p1 = urlParams.get('p1');
+if (urlParams.get('p2')) config.p2 = urlParams.get('p2');
+if (urlParams.get('a')) config.audio = urlParams.get('a');
+if (urlParams.get('m')) {
     try {
-        console.log("Found cfgParam, decoding...");
-        const pureB64 = cfgParam.replace(/ /g, '+');
-        const decodedJson = decodeURIComponent(escape(atob(pureB64)));
-        const decoded = JSON.parse(decodedJson);
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(urlParams.get('m').replace(/ /g, '+')))));
+        if (Array.isArray(decoded)) config.messages = decoded;
+    } catch (e) { console.error('Failed to parse messages:', e); }
+}
 
-        console.log("Decoded Config:", decoded);
-
-        // Map short keys to full keys
-        if (decoded.g !== undefined) config.greeting = decoded.g;
-        if (decoded.p1 !== undefined) config.p1 = decoded.p1;
-        if (decoded.p2 !== undefined) config.p2 = decoded.p2;
-        if (decoded.a !== undefined) config.audio = decoded.a;
-        if (decoded.m !== undefined) config.messages = decoded.m;
-
-        // Also support old full keys if they exist
-        if (decoded.greeting !== undefined) config.greeting = decoded.greeting;
-        if (decoded.audio !== undefined) config.audio = decoded.audio;
-        if (decoded.messages !== undefined) config.messages = decoded.messages;
-
-        console.log("Final Merged Config:", config);
-    } catch (e) {
-        console.error('Failed to parse config:', e);
-    }
+// Support the old 'cfg' Base64 for backward compatibility
+const cfg = urlParams.get('cfg');
+if (cfg) {
+    try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(cfg.replace(/ /g, '+')))));
+        if (decoded.g) config.greeting = decoded.g;
+        if (decoded.p1) config.p1 = decoded.p1;
+        if (decoded.p2) config.p2 = decoded.p2;
+        if (decoded.a) config.audio = decoded.a;
+        if (decoded.m) config.messages = decoded.m;
+        // Old full keys
+        if (decoded.greeting) config.greeting = decoded.greeting;
+        if (decoded.audio) config.audio = decoded.audio;
+        if (decoded.messages) config.messages = decoded.messages;
+    } catch (e) { console.error('Failed to parse cfg:', e); }
 }
 
 // 3. DOM-Ready Initialization
-document.addEventListener('DOMContentLoaded', () => {
-    applyConfigToDOM();
-});
-
-// Extra safety: Apply immediately if DOM is already loaded
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    applyConfigToDOM();
-}
+document.addEventListener('DOMContentLoaded', applyConfigToDOM);
+if (document.readyState === 'complete' || document.readyState === 'interactive') applyConfigToDOM();
 
 function applyConfigToDOM() {
     const greetingEl = document.getElementById('letter-greeting');
