@@ -16,9 +16,22 @@ const DEFAULTS = {
 
 function updateLink() {
     const g = document.getElementById('greeting').value.trim();
-    // Update Preview Only
+    const p1 = document.getElementById('p1').value.trim();
+
+    // Update Preview Area
     document.getElementById('live-greeting-preview').textContent = g || DEFAULTS.greeting;
 }
+
+// Attach listeners for live updates
+if (document.getElementById('greeting')) {
+    document.getElementById('greeting').addEventListener('input', updateLink);
+}
+if (document.getElementById('p1')) {
+    document.getElementById('p1').addEventListener('input', updateLink);
+}
+
+// Run once to initialize
+document.addEventListener('DOMContentLoaded', updateLink);
 
 // 3. Payment & Encryption Flow
 const payBtn = document.getElementById('pay-btn');
