@@ -11,6 +11,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="pen-styles.css">
 </head>
 
 <body>
@@ -75,9 +76,11 @@ I promise to love you, cherish you, and hold you close forever. Please say Yes? 
                             <div class="top"></div>
                             <div class="letter">
                                 <div class="letter-content">
+                                    <div class="letter-decoration top-right">🌸</div>
+                                    <div class="pen-cursor">✒️</div>
                                     <h1 id="live-greeting-preview">Dear Love,</h1>
-                                    <p id="live-p1-preview">You make every day feel like Valentine's Day...</p>
-                                    <p id="live-p2-preview"></p>
+                                    <p id="live-p1-preview" data-text=""></p>
+                                    <p id="live-p2-preview" data-text=""></p>
                                     <div class="stamp-container">
                                         <div class="stamp">❤️</div>
                                     </div>
@@ -86,8 +89,18 @@ I promise to love you, cherish you, and hold you close forever. Please say Yes? 
                         </div>
                         <div class="heart" id="open-btn"></div>
                     </div>
+
+                    <!-- Final Question Preview -->
+                    <div class="question-container hidden" id="preview-question"
+                        style="transform: scale(0.8); margin-top: -50px;">
+                        <h1>Will you be my Valentine?</h1>
+                        <div class="btn-group">
+                            <button class="btn btn-yes">Yes!</button>
+                            <button class="btn btn-no">No</button>
+                        </div>
+                    </div>
                 </div>
-                <p class="preview-hint">Click the heart to see how it looks! ✨</p>
+                <p class="preview-hint">Click the heart to see the magic animation! ✨</p>
                 <button id="reset-preview" class="btn small primary hidden" style="margin-top: 2rem;">Close & Reset
                     ↺</button>
             </div>

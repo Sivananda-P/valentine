@@ -143,6 +143,18 @@ header p {
     color: #5d4037;
     margin-bottom: 8px;
     text-align: left;
+    position: relative;
+    /* For absolute items inside */
+    min-height: 1em;
+}
+
+.inline-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.2em;
+    background-color: var(--heart-red);
+    margin-left: 2px;
+    vertical-align: middle;
 }
 
 .share-section h2 {

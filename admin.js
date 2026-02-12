@@ -19,10 +19,73 @@ function updateLink() {
     const p1 = document.getElementById('p1').value.trim();
     const p2 = document.getElementById('p2').value.trim();
 
-    // Update Preview Area
-    document.getElementById('live-greeting-preview').textContent = g || DEFAULTS.greeting;
-    document.getElementById('live-p1-preview').textContent = p1 || (DEFAULTS.p1.substring(0, 50) + "...");
-    document.getElementById('live-p2-preview').textContent = p2 || "";
+    // Update Preview Area (Gratings and Data-Text)
+    const gEl = document.getElementById('live-greeting-preview');
+    const p1El = document.getElementById('live-p1-preview');
+    const p2El = document.getElementById('live-p2-preview');
+
+    if (gEl) gEl.textContent = g || DEFAULTS.greeting;
+    if (p1El) p1El.setAttribute('data-text', p1 || DEFAULTS.p1);
+    if (p2El) p2El.setAttribute('data-text', p2 || DEFAULTS.p2);
+
+    // Initial non-animating state
+    if (!envelope.classList.contains('open')) {
+        p1El.textContent = (p1 || DEFAULTS.p1).substring(0, 50) + "...";
+        p2El.textContent = "";
+    }
+}
+
+// Typewriter logic from script.js
+function typeWriter(element, delay = 0, hidePenAfter = false) {
+    return new Promise((resolve) => {
+        const text = element.getAttribute('data-text');
+        if (!text) { resolve(); return; }
+
+        const pen = document.querySelector('.pen-cursor');
+        element.textContent = '';
+        element.classList.add('typing');
+
+        const cursor = document.createElement('span');
+        cursor.className = 'inline-cursor';
+        cursor.style.display = 'inline';
+        cursor.style.visibility = 'hidden';
+        cursor.textContent = '|';
+
+        let i = 0;
+        setTimeout(() => {
+            if (pen && !pen.classList.contains('active')) {
+                pen.classList.add('active');
+                pen.style.opacity = '0.9';
+            }
+
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    element.appendChild(cursor);
+                    if (pen) {
+                        const cursorRect = cursor.getBoundingClientRect();
+                        const letterContentRect = element.closest('.letter-content').getBoundingClientRect();
+                        pen.style.left = (cursorRect.left - letterContentRect.left - 5) + 'px';
+                        pen.style.top = (cursorRect.top - letterContentRect.top - 10) + 'px';
+                    }
+                    cursor.remove();
+                    i++;
+                    setTimeout(type, Math.random() * 50 + 30); // Faster for preview
+                } else {
+                    element.classList.remove('typing');
+                    cursor.remove();
+                    if (hidePenAfter && pen) {
+                        setTimeout(() => {
+                            pen.classList.remove('active');
+                            pen.style.opacity = '0';
+                        }, 500);
+                    }
+                    setTimeout(() => resolve(), 400);
+                }
+            }
+            type();
+        }, delay);
+    });
 }
 
 // 2. Interactive Preview Logic
@@ -31,18 +94,47 @@ const openBtn = document.getElementById('open-btn');
 const resetBtn = document.getElementById('reset-preview');
 
 if (openBtn && envelope) {
-    openBtn.addEventListener('click', () => {
+    openBtn.addEventListener('click', async () => {
+        if (envelope.classList.contains('open')) return;
+
         envelope.classList.add('open');
         resetBtn.classList.remove('hidden');
         document.querySelector('.preview-hint').classList.add('hidden');
+
+        // Typing Sequence
+        await new Promise(r => setTimeout(r, 1000));
+        await typeWriter(document.getElementById('live-p1-preview'), 500, false);
+        await typeWriter(document.getElementById('live-p2-preview'), 500, true);
+
+        // Transition to Question
+        await new Promise(r => setTimeout(r, 1500));
+        envelope.style.opacity = '0';
+        envelope.style.transform = 'translateY(-20px) scale(0.9)';
+
+        setTimeout(() => {
+            envelope.classList.add('hidden');
+            const question = document.getElementById('preview-question');
+            question.classList.remove('hidden');
+            setTimeout(() => question.classList.add('visible'), 50);
+        }, 800);
     });
 }
 
 if (resetBtn) {
     resetBtn.addEventListener('click', () => {
         envelope.classList.remove('open');
+        envelope.classList.remove('hidden');
+        envelope.style.opacity = '1';
+        envelope.style.transform = '';
+
+        document.getElementById('preview-question').classList.add('hidden');
+        document.getElementById('preview-question').classList.remove('visible');
+
         resetBtn.classList.add('hidden');
         document.querySelector('.preview-hint').classList.remove('hidden');
+
+        // Reset text
+        updateLink();
     });
 }
 
