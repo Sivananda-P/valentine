@@ -2,7 +2,7 @@
   "name": "valentine-backend",
   "version": "1.0.0",
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "dependencies": {
     "mongodb": "^6.3.0",
