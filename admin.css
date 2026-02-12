@@ -214,6 +214,55 @@ header p {
     transform: scale(1.05);
 }
 
+/* Recovery Banner Styles */
+#recovery-banner {
+    background: linear-gradient(135deg, #c21e56, #e2aab4);
+    color: white;
+    padding: 1.2rem 2rem;
+    border-radius: 20px;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 12px 30px rgba(194, 30, 86, 0.25);
+    animation: bannerSlideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.recovery-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    font-weight: 500;
+}
+
+#recover-btn.small {
+    padding: 8px 20px;
+    font-size: 0.95rem;
+    background: white;
+    color: #c21e56;
+}
+
+#dismiss-recovery {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.9rem;
+    padding: 5px;
+}
+
+@keyframes bannerSlideDown {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 @media (max-width: 600px) {
     .admin-container {
         padding: 1.5rem;

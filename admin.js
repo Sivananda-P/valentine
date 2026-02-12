@@ -78,6 +78,10 @@ if (payBtn) {
                         // 6. Generate final encrypted link
                         const finalLink = `${window.location.origin}${window.location.pathname.replace('admin.html', 'index.html')}?id=${result.linkId}#key=${key}`;
 
+                        // Save to LocalStorage for recovery
+                        localStorage.setItem('val_last_paid_link', finalLink);
+                        localStorage.setItem('val_last_paid_timestamp', new Date().toISOString());
+
                         document.getElementById('share-link').value = finalLink;
                         document.getElementById('link-display-area').classList.remove('hidden');
                         document.getElementById('payment-actions').classList.add('hidden');
@@ -121,3 +125,40 @@ if (finalCopyBtn) {
         setTimeout(() => { finalCopyBtn.innerHTML = oldText; }, 2000);
     });
 }
+
+// 4. Recovery Logic
+function checkRecovery() {
+    const lastLink = localStorage.getItem('val_last_paid_link');
+    const banner = document.getElementById('recovery-banner');
+    const recoverBtn = document.getElementById('recover-btn');
+    const dismissBtn = document.getElementById('dismiss-recovery');
+
+    if (lastLink && banner) {
+        banner.classList.remove('hidden');
+
+        recoverBtn.addEventListener('click', () => {
+            const shareLinkInput = document.getElementById('share-link');
+            const linkDisplayArea = document.getElementById('link-display-area');
+            const paymentActions = document.getElementById('payment-actions');
+
+            if (shareLinkInput && linkDisplayArea && paymentActions) {
+                shareLinkInput.value = lastLink;
+                linkDisplayArea.classList.remove('hidden');
+                paymentActions.classList.add('hidden');
+                linkDisplayArea.scrollIntoView({ behavior: 'smooth' });
+            }
+            banner.classList.add('hidden');
+        });
+
+        dismissBtn.addEventListener('click', () => {
+            if (confirm("Are you sure? Once dismissed, you can't recover this specific link here again.")) {
+                localStorage.removeItem('val_last_paid_link');
+                localStorage.removeItem('val_last_paid_timestamp');
+                banner.classList.add('hidden');
+            }
+        });
+    }
+}
+
+// Initial check
+document.addEventListener('DOMContentLoaded', checkRecovery);
