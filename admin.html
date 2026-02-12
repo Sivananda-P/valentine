@@ -67,10 +67,29 @@ I promise to love you, cherish you, and hold you close forever. Please say Yes? 
         <section class="share-section">
             <h2>Live Preview</h2>
             <div class="preview-box">
-                <p>What they see:</p>
-                <h1 id="live-greeting-preview"
-                    style="font-family: 'Dancing Script', cursive; color: var(--heart-red); margin: 0.5rem 0;">Dear
-                    Love,</h1>
+                <p>Interactive Preview:</p>
+                <div class="preview-scale-wrapper">
+                    <div class="envelope-wrapper" id="envelope">
+                        <div class="envelope">
+                            <div class="front"></div>
+                            <div class="top"></div>
+                            <div class="letter">
+                                <div class="letter-content">
+                                    <h1 id="live-greeting-preview">Dear Love,</h1>
+                                    <p id="live-p1-preview">You make every day feel like Valentine's Day...</p>
+                                    <p id="live-p2-preview"></p>
+                                    <div class="stamp-container">
+                                        <div class="stamp">❤️</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="heart" id="open-btn"></div>
+                    </div>
+                </div>
+                <p class="preview-hint">Click the heart to see how it looks! ✨</p>
+                <button id="reset-preview" class="btn small primary hidden" style="margin-top: 2rem;">Close & Reset
+                    ↺</button>
             </div>
 
             <div id="link-display-area" class="hidden">

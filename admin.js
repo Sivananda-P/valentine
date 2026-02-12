@@ -17,9 +17,33 @@ const DEFAULTS = {
 function updateLink() {
     const g = document.getElementById('greeting').value.trim();
     const p1 = document.getElementById('p1').value.trim();
+    const p2 = document.getElementById('p2').value.trim();
 
     // Update Preview Area
     document.getElementById('live-greeting-preview').textContent = g || DEFAULTS.greeting;
+    document.getElementById('live-p1-preview').textContent = p1 || (DEFAULTS.p1.substring(0, 50) + "...");
+    document.getElementById('live-p2-preview').textContent = p2 || "";
+}
+
+// 2. Interactive Preview Logic
+const envelope = document.getElementById('envelope');
+const openBtn = document.getElementById('open-btn');
+const resetBtn = document.getElementById('reset-preview');
+
+if (openBtn && envelope) {
+    openBtn.addEventListener('click', () => {
+        envelope.classList.add('open');
+        resetBtn.classList.remove('hidden');
+        document.querySelector('.preview-hint').classList.add('hidden');
+    });
+}
+
+if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+        envelope.classList.remove('open');
+        resetBtn.classList.add('hidden');
+        document.querySelector('.preview-hint').classList.remove('hidden');
+    });
 }
 
 // Attach listeners for live updates
@@ -28,6 +52,9 @@ if (document.getElementById('greeting')) {
 }
 if (document.getElementById('p1')) {
     document.getElementById('p1').addEventListener('input', updateLink);
+}
+if (document.getElementById('p2')) {
+    document.getElementById('p2').addEventListener('input', updateLink);
 }
 
 // Run once to initialize
