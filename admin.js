@@ -15,85 +15,51 @@ const DEFAULTS = {
 };
 
 function updateLink() {
-    const rawConfig = {
-        greeting: document.getElementById('greeting').value,
-        p1: document.getElementById('p1').value,
-        p2: document.getElementById('p2').value,
-        audio: document.getElementById('audio').value,
-        messages: document.getElementById('messages').value.split('\n').filter(m => m.trim() !== '')
-    };
+    const g = document.getElementById('greeting').value.trim();
+    const p1 = document.getElementById('p1').value.trim();
+    const p2 = document.getElementById('p2').value.trim();
+    const a = document.getElementById('audio').value.trim();
+    const m = document.getElementById('messages').value.split('\n').map(l => l.trim()).filter(l => l !== '');
 
-    // Update Live Preview instantly
-    const previewEl = document.getElementById('live-greeting-preview');
-    if (previewEl) {
-        previewEl.textContent = rawConfig.greeting || "Dear Love,";
+    // 1. Update Preview
+    document.getElementById('live-greeting-preview').textContent = g || DEFAULTS.greeting;
+
+    // 2. Build URL
+    const url = new URL('index.html', window.location.href);
+    url.search = ''; // Clear existing params
+
+    // Only add if NOT default
+    if (g && g !== DEFAULTS.greeting) url.searchParams.set('g', g);
+    if (p1 && p1 !== DEFAULTS.p1) url.searchParams.set('p1', p1);
+    if (p2 && p2 !== DEFAULTS.p2) url.searchParams.set('p2', p2);
+    if (a && a !== DEFAULTS.audio && a !== "") url.searchParams.set('a', a);
+
+    const mIsDefault = m.length === DEFAULTS.messages.length && m.every((v, i) => v === DEFAULTS.messages[i]);
+    if (!mIsDefault && m.length > 0) {
+        url.searchParams.set('m', btoa(unescape(encodeURIComponent(JSON.stringify(m)))));
     }
 
-    // Only include values that differ from defaults to minimize URL length
-    const compactConfig = {};
-    if (rawConfig.greeting !== DEFAULTS.greeting) compactConfig.g = rawConfig.greeting;
-    if (rawConfig.p1 !== DEFAULTS.p1) compactConfig.p1 = rawConfig.p1;
-    if (rawConfig.p2 !== DEFAULTS.p2) compactConfig.p2 = rawConfig.p2;
-    if (rawConfig.audio !== DEFAULTS.audio && rawConfig.audio !== "") compactConfig.a = rawConfig.audio;
-
-    // Compare messages array
-    const isDefaultMessages = JSON.stringify(rawConfig.messages) === JSON.stringify(DEFAULTS.messages);
-    if (!isDefaultMessages) compactConfig.m = rawConfig.messages;
-
-    const json = JSON.stringify(compactConfig);
-    // Universal UTF-8 Base64 encode
-    const b64 = btoa(unescape(encodeURIComponent(json)));
-
-    // Get base URL correctly
-    const currentUrl = window.location.href;
-    const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1) + 'index.html';
-
-    // shareLink for the input (cleaner)
-    const shareLink = `${baseUrl}?cfg=${encodeURIComponent(b64)}`;
-    // previewLink with cache buster to force refresh for the creator
-    const previewLink = `${shareLink}&t=${new Date().getTime()}`;
-
+    const shareLink = url.href;
     document.getElementById('share-link').value = shareLink;
-    document.getElementById('preview-btn').href = previewLink;
-
-    // Subtle visual feedback
-    const box = document.querySelector('.preview-box');
-    if (box) {
-        box.style.background = 'rgba(255, 107, 157, 0.05)';
-        setTimeout(() => { box.style.background = ''; }, 200);
-    }
+    document.getElementById('preview-btn').href = shareLink + (shareLink.includes('?') ? '&' : '?') + 't=' + Date.now();
 }
 
-// Initial update
+['input', 'change', 'keyup'].forEach(ev => {
+    ['greeting', 'p1', 'p2', 'audio', 'messages'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener(ev, updateLink);
+    });
+});
+
 updateLink();
 
-// Listen for ALL input changes INSTANTLY
-const inputs = ['greeting', 'p1', 'p2', 'audio', 'messages'];
-inputs.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-        el.addEventListener('input', updateLink);
-        el.addEventListener('change', updateLink);
-    }
-});
-
-document.getElementById('copy-btn').addEventListener('click', () => {
+document.getElementById('copy-btn').onclick = () => {
     updateLink();
-    const linkInput = document.getElementById('share-link');
-    linkInput.select();
-
-    try {
-        navigator.clipboard.writeText(linkInput.value);
-    } catch (err) {
-        document.execCommand('copy');
-    }
-
+    const el = document.getElementById('share-link');
+    el.select();
+    navigator.clipboard.writeText(el.value);
     const btn = document.getElementById('copy-btn');
-    const originalText = btn.innerHTML;
+    const old = btn.innerHTML;
     btn.innerHTML = 'Copied! ✅';
-    btn.style.background = '#4CAF50';
-    setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.style.background = '';
-    }, 2000);
-});
+    setTimeout(() => { btn.innerHTML = old; }, 2000);
+};
