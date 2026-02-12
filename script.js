@@ -15,7 +15,10 @@ const DEFAULTS = {
     ]
 };
 
-// 2. Immediate Config Parsing
+// 2. Active Configuration (starts with defaults)
+let config = JSON.parse(JSON.stringify(DEFAULTS));
+
+// 3. Immediate Config Parsing
 async function loadConfig() {
     const url = new URL(window.location.href);
     const urlParams = url.searchParams;
