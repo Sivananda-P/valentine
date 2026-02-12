@@ -27,12 +27,17 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     overflow-x: hidden;
     overflow-y: auto;
     color: var(--text-main);
-    padding: 2rem 0;
+    padding: 4rem 1rem;
+}
+
+.container {
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 #particles-js {
