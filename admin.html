@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customize Your Valentine Gift</title>
+    <script src="crypto-utils.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
@@ -63,18 +64,27 @@ I promise to love you, cherish you, and hold you close forever. Please say Yes? 
                     Love,</h1>
             </div>
 
-            <h2>Your Shareable Link</h2>
-            <div class="link-box">
-                <input type="text" id="share-link" readonly>
-                <button id="copy-btn">Copy Link 📋</button>
+            <div id="link-display-area" class="hidden">
+                <h2>Your Private Encrypted Link</h2>
+                <div class="link-box">
+                    <input type="text" id="share-link" readonly>
+                    <button id="final-copy-btn" class="btn primary">Copy Link 📋</button>
+                </div>
+                <p class="share-info">This link is encrypted. Only the person with this link can read your message. 💖
+                </p>
             </div>
-            <p class="share-info">Share this link with your special someone! 💖</p>
-            <div class="actions">
-                <a href="index.html" class="preview-btn" id="preview-btn">Open Full Gift ✨</a>
+
+            <div class="actions" id="payment-actions">
+                <button class="btn accent" id="pay-btn">
+                    <span class="btn-text">Pay & Generate Encrypted Link</span>
+                    <span class="btn-price">₹99</span>
+                </button>
             </div>
         </section>
     </div>
 
+    <!-- Razorpay Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="admin.js"></script>
 </body>
 

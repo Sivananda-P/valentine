@@ -16,50 +16,108 @@ const DEFAULTS = {
 
 function updateLink() {
     const g = document.getElementById('greeting').value.trim();
-    const p1 = document.getElementById('p1').value.trim();
-    const p2 = document.getElementById('p2').value.trim();
-    const a = document.getElementById('audio').value.trim();
-    const m = document.getElementById('messages').value.split('\n').map(l => l.trim()).filter(l => l !== '');
-
-    // 1. Update Preview
+    // Update Preview Only
     document.getElementById('live-greeting-preview').textContent = g || DEFAULTS.greeting;
-
-    // 2. Build URL
-    const url = new URL('index.html', window.location.href);
-    url.search = ''; // Clear existing params
-
-    // Only add if NOT default
-    if (g && g !== DEFAULTS.greeting) url.searchParams.set('g', g);
-    if (p1 && p1 !== DEFAULTS.p1) url.searchParams.set('p1', p1);
-    if (p2 && p2 !== DEFAULTS.p2) url.searchParams.set('p2', p2);
-    if (a && a !== DEFAULTS.audio && a !== "") url.searchParams.set('a', a);
-
-    const mIsDefault = m.length === DEFAULTS.messages.length && m.every((v, i) => v === DEFAULTS.messages[i]);
-    if (!mIsDefault && m.length > 0) {
-        url.searchParams.set('m', btoa(unescape(encodeURIComponent(JSON.stringify(m)))));
-    }
-
-    const shareLink = url.href;
-    document.getElementById('share-link').value = shareLink;
-    document.getElementById('preview-btn').href = shareLink + (shareLink.includes('?') ? '&' : '?') + 't=' + Date.now();
 }
 
-['input', 'change', 'keyup'].forEach(ev => {
-    ['greeting', 'p1', 'p2', 'audio', 'messages'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener(ev, updateLink);
+// 3. Payment & Encryption Flow
+const payBtn = document.getElementById('pay-btn');
+if (payBtn) {
+    payBtn.addEventListener('click', async () => {
+        const btnText = payBtn.querySelector('.btn-text');
+        const originalText = btnText.textContent;
+
+        try {
+            btnText.textContent = "Processing...";
+            payBtn.disabled = true;
+
+            // 1. Get current config
+            const config = {
+                g: document.getElementById('greeting').value.trim(),
+                p1: document.getElementById('p1').value.trim(),
+                p2: document.getElementById('p2').value.trim(),
+                a: document.getElementById('audio').value.trim(),
+                m: document.getElementById('messages').value.split('\n').map(l => l.trim()).filter(l => l !== '')
+            };
+
+            // 2. Encrypt data locally (Zero-Knowledge)
+            const { encrypted, key } = await window.Privacy.encrypt(config);
+
+            // 3. Create Razorpay Order
+            const orderRes = await fetch('/api/create-order', { method: 'POST' });
+            const order = await orderRes.json();
+
+            // Fetch Public Key
+            const keyRes = await fetch('/api/get-keys');
+            const { razorpayKeyId } = await keyRes.json();
+
+            if (!order.id || !razorpayKeyId) throw new Error("Initialization failed");
+
+            // 4. Open Razorpay Checkout
+            const options = {
+                key: razorpayKeyId,
+                amount: order.amount,
+                currency: order.currency,
+                name: "Valentine Surprise",
+                description: "Encrypted Permanent Link",
+                order_id: order.id,
+                handler: async function (response) {
+                    // 5. Verify Payment & Store Data
+                    const verifyRes = await fetch('/api/verify-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            ...response,
+                            encryptedData: encrypted
+                        })
+                    });
+
+                    const result = await verifyRes.json();
+
+                    if (result.success) {
+                        // 6. Generate final encrypted link
+                        const finalLink = `${window.location.origin}${window.location.pathname.replace('admin.html', 'index.html')}?id=${result.linkId}#key=${key}`;
+
+                        document.getElementById('share-link').value = finalLink;
+                        document.getElementById('link-display-area').classList.remove('hidden');
+                        document.getElementById('payment-actions').classList.add('hidden');
+
+                        alert("Success! Your private encrypted link is ready. ❤️");
+                        document.getElementById('link-display-area').scrollIntoView({ behavior: 'smooth' });
+                    }
+                },
+                prefill: {
+                    name: config.g || "Valentine User"
+                },
+                theme: { color: "#ff4d8d" }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                alert("Payment Failed: " + response.error.description);
+            });
+            rzp.open();
+
+        } catch (err) {
+            console.error(err);
+            alert("Error: " + err.message);
+        } finally {
+            btnText.textContent = originalText;
+            payBtn.disabled = false;
+        }
     });
-});
+}
 
-updateLink();
+// Copy functionality for the paid link
+const finalCopyBtn = document.getElementById('final-copy-btn');
+if (finalCopyBtn) {
+    finalCopyBtn.addEventListener('click', () => {
+        const el = document.getElementById('share-link');
+        el.select();
+        navigator.clipboard.writeText(el.value);
 
-document.getElementById('copy-btn').onclick = () => {
-    updateLink();
-    const el = document.getElementById('share-link');
-    el.select();
-    navigator.clipboard.writeText(el.value);
-    const btn = document.getElementById('copy-btn');
-    const old = btn.innerHTML;
-    btn.innerHTML = 'Copied! ✅';
-    setTimeout(() => { btn.innerHTML = old; }, 2000);
-};
+        const oldText = finalCopyBtn.innerHTML;
+        finalCopyBtn.innerHTML = 'Copied! ✅';
+        setTimeout(() => { finalCopyBtn.innerHTML = oldText; }, 2000);
+    });
+}

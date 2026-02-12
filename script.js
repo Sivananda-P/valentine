@@ -15,43 +15,69 @@ const DEFAULTS = {
     ]
 };
 
-let config = { ...DEFAULTS };
-
 // 2. Immediate Config Parsing
-const urlParams = new URL(window.location.href).searchParams;
+async function loadConfig() {
+    const url = new URL(window.location.href);
+    const urlParams = url.searchParams;
+    const dbId = urlParams.get('id');
+    const hashKey = url.hash.replace('#key=', '');
 
-// Support individual query params (Highest priority)
-if (urlParams.get('g')) config.greeting = urlParams.get('g');
-if (urlParams.get('p1')) config.p1 = urlParams.get('p1');
-if (urlParams.get('p2')) config.p2 = urlParams.get('p2');
-if (urlParams.get('a')) config.audio = urlParams.get('a');
-if (urlParams.get('m')) {
-    try {
-        const decoded = JSON.parse(decodeURIComponent(escape(atob(urlParams.get('m').replace(/ /g, '+')))));
-        if (Array.isArray(decoded)) config.messages = decoded;
-    } catch (e) { console.error('Failed to parse messages:', e); }
+    // 1. Check for DB Link (Highest Priority)
+    if (dbId && hashKey) {
+        try {
+            console.log("Fetching encrypted config from DB...");
+            const res = await fetch(`/api/get-config?id=${dbId}`);
+            if (!res.ok) throw new Error("Link not found");
+            const data = await res.json();
+
+            // Decrypt locally (Zero-Knowledge)
+            const decrypted = await window.Privacy.decrypt(data.encryptedData, hashKey);
+
+            // Map decrypted keys
+            if (decrypted.g) config.greeting = decrypted.g;
+            if (decrypted.p1) config.p1 = decrypted.p1;
+            if (decrypted.p2) config.p2 = decrypted.p2;
+            if (decrypted.a) config.audio = decrypted.a;
+            if (decrypted.m) config.messages = decrypted.m;
+
+            console.log("DB Config Decrypted Successfully");
+        } catch (e) {
+            console.error("DB Loading failed:", e);
+            alert("Privacy Note: This link is encrypted. Please ensure you have the full URL with the key.");
+        }
+    }
+
+    // 2. Support individual query params (Backward Compatibility)
+    if (urlParams.get('g')) config.greeting = urlParams.get('g');
+    if (urlParams.get('p1')) config.p1 = urlParams.get('p1');
+    if (urlParams.get('p2')) config.p2 = urlParams.get('p2');
+    if (urlParams.get('a')) config.audio = urlParams.get('a');
+    if (urlParams.get('m')) {
+        try {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(urlParams.get('m').replace(/ /g, '+')))));
+            if (Array.isArray(decoded)) config.messages = decoded;
+        } catch (e) { console.error('Failed to parse messages:', e); }
+    }
+
+    // 3. Support 'cfg' Base64
+    const cfg = urlParams.get('cfg');
+    if (cfg) {
+        try {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(cfg.replace(/ /g, '+')))));
+            if (decoded.g) config.greeting = decoded.g;
+            if (decoded.p1) config.p1 = decoded.p1;
+            if (decoded.p2) config.p2 = decoded.p2;
+            if (decoded.a) config.audio = decoded.a;
+            if (decoded.m) config.messages = decoded.m;
+        } catch (e) { console.error('Failed to parse cfg:', e); }
+    }
+
+    applyConfigToDOM();
 }
 
-// Support the old 'cfg' Base64 for backward compatibility
-const cfg = urlParams.get('cfg');
-if (cfg) {
-    try {
-        const decoded = JSON.parse(decodeURIComponent(escape(atob(cfg.replace(/ /g, '+')))));
-        if (decoded.g) config.greeting = decoded.g;
-        if (decoded.p1) config.p1 = decoded.p1;
-        if (decoded.p2) config.p2 = decoded.p2;
-        if (decoded.a) config.audio = decoded.a;
-        if (decoded.m) config.messages = decoded.m;
-        // Old full keys
-        if (decoded.greeting) config.greeting = decoded.greeting;
-        if (decoded.audio) config.audio = decoded.audio;
-        if (decoded.messages) config.messages = decoded.messages;
-    } catch (e) { console.error('Failed to parse cfg:', e); }
-}
-
-// 3. DOM-Ready Initialization
-document.addEventListener('DOMContentLoaded', applyConfigToDOM);
-if (document.readyState === 'complete' || document.readyState === 'interactive') applyConfigToDOM();
+// 3. Initialization
+document.addEventListener('DOMContentLoaded', loadConfig);
+if (document.readyState === 'complete' || document.readyState === 'interactive') loadConfig();
 
 function applyConfigToDOM() {
     const greetingEl = document.getElementById('letter-greeting');

@@ -192,3 +192,25 @@
         font-size: 4rem;
     }
 }
+
+
+.footer-link {
+    text-align: center;
+    margin-top: 3rem;
+    padding-bottom: 2rem;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.footer-link:hover {
+    opacity: 1;
+}
+
+.footer-link a {
+    color: #c21e56;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-bottom: 1px dashed #f8bbd0;
+    padding-bottom: 2px;
+}
