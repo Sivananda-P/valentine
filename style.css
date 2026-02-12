@@ -24,12 +24,15 @@ body {
         radial-gradient(circle at 90% 90%, #fff0f3 0%, transparent 40%),
         #fff5f7;
     font-family: 'Outfit', sans-serif;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     color: var(--text-main);
+    padding: 2rem 0;
 }
 
 #particles-js {
