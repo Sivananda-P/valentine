@@ -195,15 +195,25 @@
 
 
 .footer-link {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
-    margin-top: 3rem;
-    padding-bottom: 2rem;
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
+    z-index: 1001;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 8px 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    opacity: 0.8;
+    transition: all 0.3s ease;
 }
 
 .footer-link:hover {
     opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 8px 20px rgba(194, 30, 86, 0.1);
 }
 
 .footer-link a {
